@@ -17,9 +17,9 @@ module Gorsse
 
     def msg
       hash = {
-        'protocol' => @protocol.class.name,
+        'proto' => @protocol.class.name,
         'scope' => @protocol.scope,
-        'target' => @target.kind_of?(Client) ? @target.uid : 'all',
+        'client' => @target.kind_of?(Client) ? @target.uid : 'all',
       }
 
       if @entity.respond_to?(:to_sse)
@@ -27,7 +27,7 @@ module Gorsse
         hash['content'] = @entity.to_sse
       else
         hash['title'] = @entity.to_s
-        hash['content'] = nil
+        hash['content'] = ''
       end
 
       hash

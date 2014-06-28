@@ -16,10 +16,6 @@ module Gorsse
       # Do nothing. Override in subclasses.
     end
 
-    def after_close(client_id)
-      # Do nothing. Override in subclasses.
-    end
-
     def eql?(other)
       self.class == other.class && self.scope == other.scope
     end

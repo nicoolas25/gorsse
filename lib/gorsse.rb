@@ -1,5 +1,3 @@
-require 'zmq'
-
 module Gorsse
   {
     :Client     => 'client',
@@ -21,7 +19,7 @@ module Gorsse
   def self.close_connections
     @conn && @conn.close
     @control_conn && @control_conn.close
-    Connection::ZCTX.close
+    Connection::ZCTX.terminate
   end
 
   def self.conn

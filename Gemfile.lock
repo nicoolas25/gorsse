@@ -1,10 +1,14 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    zmq (2.1.4)
+    ffi (1.9.3)
+    ffi-rzmq (2.0.1)
+      ffi-rzmq-core (>= 1.0.1)
+    ffi-rzmq-core (1.0.3)
+      ffi (~> 1.9)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  zmq
+  ffi-rzmq

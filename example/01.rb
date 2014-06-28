@@ -54,4 +54,4 @@ trap('INT') do
   exit
 end
 
-Gorsse.start_control_loop!
+# Gorsse.start_control_loop!

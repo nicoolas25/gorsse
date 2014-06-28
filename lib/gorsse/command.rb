@@ -7,10 +7,10 @@ module Gorsse
     end
 
     def run!
-      protocol_class = Object.const_get(@command['proto'])
-      protocol = protocol_class.new(@command['scope'])
-      client = Client.new(@command['client'])
-      protocol.__send__(@command['callback'], client)
+      protocol_class = Object.const_get(@command['Protocol'])
+      protocol = protocol_class.new(@command['Scope'])
+      client = Client.new(@command['Client'])
+      protocol.__send__(@command['Callback'], client)
     end
   end
 end
