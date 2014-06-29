@@ -6,6 +6,7 @@ module Gorsse
     :Connection => 'connection',
     :Event      => 'event',
     :Protocol   => 'protocol',
+    :VERSION    => 'version',
   }.each { |mod, file| autoload mod, "gorsse/#{file}" }
 
   def self.configure(&block)
