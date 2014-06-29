@@ -1,3 +1,8 @@
+#
+# This is a simple example of using gorsse from a Ruby application.
+# The callback receiver isn't used here.
+#
+
 $:.unshift File.join(File.dirname(__FILE__), '..', 'lib')
 
 require 'gorsse'
@@ -5,21 +10,12 @@ require 'gorsse'
 # Configure the library by defining the address to receive
 # the external callback and the address to send the events.
 Gorsse.configure do |config|
-  config.receiver = 'tcp://127.0.0.1:4567'
   config.handler  = 'tcp://127.0.0.1:4568'
 end
 
 # Define an entity to use as an event.
 # An entity should only have a to_sse method.
-class Article
-  attr_accessor :title, :content
-
-  def initialize(attributes={})
-    attributes.each do |attr, value|
-      self.__send__("#{attr}=", value)
-    end
-  end
-
+class Article < Struct.new(:title, :content)
   def to_sse
     '%s|%s' % [title, content]
   end
@@ -27,31 +23,20 @@ end
 
 # Create an specific use case of communication. This is
 # called a protocol in the library. Specific behaviours
-# can be defined in the class.
-class BlogFeed < Gorsse::Protocol
-  # After some client join a channel matching this protocol
-  # this method is triggered. Custom signals can be sent to
-  # all users or to the new one.
-  def after_connect(client)
-    super
-    signal('welcome', target: client)
-  end
-end
+# can be defined in the class, callbacks too.
+class PostFeed < Gorsse::Protocol ; end
 
 # Create a Protocol instance scoped with 'loremscope'.
-loremblog = BlogFeed.new('loremblog')
+post_feed = PostFeed.new('scope')
 
 # Create an new event to send.
-article = Article.new(title: 'Title', content: 'Content')
+article = Article.new('Title', 'Content')
 
 # Signal the loremblog listenners with the 'article',
 # all the clients should receive the signal (it's the default).
-loremblog.signal(article, target: :all)
+post_feed.signal(article)
 
-trap('INT') do
-  puts 'stopping gorsse'
+# Close the connexion when the program exits
+at_exit do
   Gorsse.close_connections
-  exit
 end
-
-# Gorsse.start_control_loop!
