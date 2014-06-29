@@ -125,24 +125,35 @@ class Message < Struct.new(:author, :content)
   end
 end
 
-endpoint.signal Message.new('Nicolas', 'Hello!')
+message = Message.new('Bob', 'Hello!')
+endpoint.signal(message)
 ~~~
 
 The previous code will generate the following lines in the SSE stream:
 
 ~~~
 event: Message
-data: Nicolas|Hello!
-
+data: Bob|Hello!
+ 
 ~~~
 
 ### Private messages
 
 You can achieve private messages with scopes.
 
-There is also a notion of Client.
+There is also a notion of Client that allows you to do something like this:
+
+~~~
+:::ruby
+client = Gorsse::Client.new('124df54b0')
+message = Message.new('Alice', 'Goodbye...')
+endpoint.signal(message, target: client)
+~~~
 
 *This section should be completed.*
+
+The missing piece here is that we need something to pass the client identity
+from the server to the client then to the connection handler...
 
 ## Alternative
 
