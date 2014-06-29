@@ -155,6 +155,14 @@ endpoint.signal(message, target: client)
 The missing piece here is that we need something to pass the client identity
 from the server to the client then to the connection handler...
 
+## Installation
+
+Add the classic line to your Gemfile:
+
+~~~
+gem 'gorsse'
+~~~
+
 ## Alternative
 
 There is many other solutions out there that are aiming the same goal.
