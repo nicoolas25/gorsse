@@ -3,10 +3,10 @@ $:.unshift File.join(File.dirname(__FILE__), '..', 'lib')
 require 'gorsse'
 
 # Configure the library by defining the address to receive
-# the external control.
+# the external callback and the address to send the events.
 Gorsse.configure do |config|
-  config.control = 'tcp://127.0.0.1:4567'
-  config.server  = 'tcp://127.0.0.1:4568'
+  config.receiver = 'tcp://127.0.0.1:4567'
+  config.handler  = 'tcp://127.0.0.1:4568'
 end
 
 # Define an entity to use as an event.

@@ -18,21 +18,21 @@ module Gorsse
 
   def self.close_connections
     @conn && @conn.close
-    @control_conn && @control_conn.close
+    @receiver_conn && @receiver_conn.close
     Connection::ZCTX.terminate
   end
 
   def self.conn
-    @conn ||= Connection.new(config.server, mode: :push, method: :connect)
+    @conn ||= Connection.new(config.handler, mode: :push, method: :connect)
   end
 
-  def self.control_conn
-    @control_conn ||= Connection.new(config.control, mode: :pull, method: :bind)
+  def self.receiver_conn
+    @receiver_conn ||= Connection.new(config.receiver, mode: :pull, method: :bind)
   end
 
-  def self.start_control_loop!
+  def self.start_receiver_loop!
     loop do
-      message = control_conn.receive
+      message = receiver_conn.receive
       command = Command.new(message)
       command.run!
     end
