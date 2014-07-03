@@ -15,6 +15,7 @@ type Server struct {
 	Dispatcher *Dispatcher
 	events     chan es.Event
 	commands   chan mc.Callback
+	callbacks  bool
 }
 
 type Link struct {
@@ -26,12 +27,13 @@ type Link struct {
 	request  *http.Request
 }
 
-func NewServer(port int, server *es.Server, client *mc.Client) *Server {
+func NewServer(port int, server *es.Server, client *mc.Client, callbacks bool) *Server {
 	return &Server{
 		Url:        fmt.Sprintf("0.0.0.0:%d", port),
 		Dispatcher: NewDispatcher(),
 		events:     server.Events,
 		commands:   client.Commands,
+		callbacks:  callbacks,
 	}
 }
 
@@ -79,11 +81,13 @@ func (server *Server) unregister(link *Link) {
 }
 
 func (server *Server) afterConnect(link *Link) {
-	server.commands <- mc.Callback{
-		Protocol: link.protocol,
-		Scope:    link.scope,
-		Client:   link.client,
-		Callback: "after_connect",
+	if server.callbacks {
+		server.commands <- mc.Callback{
+			Protocol: link.protocol,
+			Scope:    link.scope,
+			Client:   link.client,
+			Callback: "after_connect",
+		}
 	}
 }
 

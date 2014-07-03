@@ -17,6 +17,7 @@ func main() {
 	events_url := flag.String("e", "tcp://127.0.0.1:4568", "the address to receive the events")
 	master_url := flag.String("c", "tcp://127.0.0.1:4567", "the address to send the callbacks")
 	port := flag.Int("p", 8080, "the port to listen client connections")
+	callback := flag.Bool("s", false, "turn on the callbacks when present")
 	flag.Parse()
 
 	// Create the ZMQ context
@@ -41,7 +42,7 @@ func main() {
 	signal.Notify(abort, os.Interrupt)
 
 	// Create the web server
-	ws_server := ws.NewServer(*port, es_server, mc_client)
+	ws_server := ws.NewServer(*port, es_server, mc_client, *callback)
 	go ws_server.Start()
 	defer ws_server.Stop()
 
