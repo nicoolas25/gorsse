@@ -6,8 +6,9 @@
     <script type="text/javascript">
       var source = new EventSource('http://127.0.0.1:8080/events?p=PostFeed&s=scope');
       source.addEventListener('Article', function(e) {
-        console.log(e);
-        }, false);
+        var data = JSON.parse(e.data);
+        console.log('Article received:', data);
+      }, false);
     </script>
   </body>
 </html>

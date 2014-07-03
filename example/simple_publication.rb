@@ -5,6 +5,7 @@
 
 $:.unshift File.join(File.dirname(__FILE__), '..', 'lib')
 
+require 'json'
 require 'gorsse'
 
 # Configure the library by defining the address to receive
@@ -17,7 +18,7 @@ end
 # An entity should only have a to_sse method.
 class Article < Struct.new(:title, :content)
   def to_sse
-    '%s|%s' % [title, content]
+    JSON.generate({title: title, content: content})
   end
 end
 
