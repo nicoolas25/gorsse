@@ -1,0 +1,13 @@
+<html>
+  <head>
+    <title>Example of SSE using Gorsse</title>
+  </head>
+  <body>
+    <script type="text/javascript">
+      var source = new EventSource('http://127.0.0.1:8080/events?p=PostFeed&s=scope');
+      source.addEventListener('Article', function(e) {
+        console.log(e);
+        }, false);
+    </script>
+  </body>
+</html>
