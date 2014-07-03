@@ -1,5 +1,7 @@
 # Gorsse (Go Ruby SSE)
 
+<a href="http://twitter.com/nicoolas25"><img src="http://www.pairprogramwith.me/assets/badge.svg" style="height:40px" title="We can pair on this!" /></a>
+
 This is an proof of concept for an SSE system that will support many
 users without compromising a Ruby server that isn't that good to handle
 a lot of alive connections.
@@ -163,6 +165,9 @@ Add the classic line to your Gemfile:
 gem 'gorsse'
 ~~~
 
+Compile your own binaries for the connection handler (see the dedicated README
+in the `gorsse_server` directory). You can also ask me for a binary version.
+
 ## Alternative
 
 There is many other solutions out there that are aiming the same goal.
@@ -175,6 +180,19 @@ on it.
 
 Of course all of this project is tied to the Ruby world. You can have
 it all for free with other platforms like Meteor.
+
+## TODOs
+
+* Add tests both for the Go code and the Ruby code
+* Add documentation about proxying via nginx
+* Add more options to configure the connection handler
+* Any other useful stuff that I didn't think of...
+
+## Contributions
+
+They're welcome! Just know that this is a toy project for me yet.
+Even if I'll be glad to receive contributions and advices about it
+I may not be able to provide a excellent level of support.
 
 ## Licence
 
