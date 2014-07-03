@@ -12,7 +12,12 @@ Gem::Specification.new do |spec|
   spec.homepage      = ''
   spec.license       = 'LGPL'
 
-  spec.files         = `git ls-files -z`.split("\x0")
+  # Do not include the go sources in the packaged gem
+  # spec.files       = `git ls-files -z`.split("\x0")
+  spec.files         = Dir['lib/**/*']
+  spec.files        += Dir['spec/**/*']
+  spec.files        += ['Gemfile', 'LICENCE', 'README.md']
+
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ['lib']
