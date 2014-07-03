@@ -174,12 +174,17 @@ There is many other solutions out there that are aiming the same goal.
 You can try to fix the server with Goliath or you can rely on external
 components with Faye.
 
-I don't think webservers like Puma is a viable alternative even if it
+There is a good article about [SSE in Ruby][ruby-sse] with Goliath and
+EventMachine. The implementation now relies on EM channels that are
+something native in Go. The backend of Gorsse could have been written as
+described here.
+
+I don't think webservers like Puma are a viable alternative even if it
 is using threads to handle requests. I'll be glad to have your feedback
 on it.
 
 Of course all of this project is tied to the Ruby world. You can have
-it all for free with other platforms like Meteor.
+it all for free with other platforms like Meteor...
 
 ## TODOs
 
@@ -205,3 +210,5 @@ This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
+
+[ruby-sse]: http://robots.thoughtbot.com/chat-example-app-using-server-sent-events
