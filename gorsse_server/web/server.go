@@ -93,7 +93,7 @@ func (server *Server) afterConnect(link *Link) {
 
 func (server *Server) sendEvent(w http.ResponseWriter, f http.Flusher, event es.Event) bool {
 	_, err := fmt.Fprintf(w, "event: %s\n", event.Event)
-	if nil == err {
+	if nil != err {
 		return false
 	}
 	if "" != event.Data {
@@ -125,9 +125,11 @@ func (server *Server) connectionHandler(w http.ResponseWriter, r *http.Request) 
 		if f, ok := w.(http.Flusher); ok {
 			server.afterConnect(link)
 			for {
-				event := <-link.Events
-				if success := server.sendEvent(w, f, event); !success {
-					break
+				select {
+				case event := <-link.Events:
+					if success := server.sendEvent(w, f, event); !success {
+						break
+					}
 				}
 			}
 		} else {
