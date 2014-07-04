@@ -188,9 +188,9 @@ it all for free with other platforms like Meteor...
 
 ## TODOs
 
-* Add tests both for the Go code and the Ruby code
-* Add documentation about proxying via nginx
-* Add more options to configure the connection handler
+* Documentation about proxying via nginx
+* Tests both for the Go code and the Ruby code
+* Benchmarking versus the alternatives
 * Any other useful stuff that I didn't think of...
 
 ## Contributions
