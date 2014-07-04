@@ -16,8 +16,10 @@ module Gorsse
     private
 
     def msg
+      klass = @protocol.class
+
       hash = {
-        'proto' => @protocol.class.name,
+        'proto' => klass.respond_to?(:sse_name) ? klass.sse_name : klass.name,
         'scope' => @protocol.scope,
         'client' => @target.kind_of?(Client) ? @target.uid : 'all',
       }

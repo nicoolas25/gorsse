@@ -4,6 +4,7 @@
 
 $:.unshift File.join(File.dirname(__FILE__), '..', 'lib')
 
+require 'json'
 require 'gorsse'
 
 # Configure the library by defining the address to receive
@@ -15,7 +16,17 @@ end
 
 class Article < Struct.new(:title, :content)
   def to_sse
-    '%s|%s' % [title, content]
+    JSON.generate({title: title, content: content})
+  end
+end
+
+class CurrentClient < Struct.new(:uid)
+  def self.sse_name
+    'current_client'
+  end
+
+  def to_sse
+    JSON.generate({uid: uid})
   end
 end
 
@@ -23,9 +34,11 @@ class BlogFeed < Gorsse::Protocol
   # After some client join a channel matching this protocol
   # this method is triggered. Custom signals can be sent to
   # all users or to the new one.
+  #
+  # In this cas we send to each client its current uid.
   def after_connect(client)
     super
-    signal('welcome', target: client)
+    signal(CurrentClient.new(client.uid), target: client)
   end
 end
 
@@ -34,4 +47,4 @@ trap('INT') do
   exit
 end
 
-Gorsse.start_control_loop!
+Gorsse.start_receiver_loop!
