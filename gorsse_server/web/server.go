@@ -91,6 +91,25 @@ func (server *Server) afterConnect(link *Link) {
 	}
 }
 
+func (server *Server) sendEvent(w http.ResponseWriter, f http.Flusher, event es.Event) bool {
+	_, err := fmt.Fprintf(w, "event: %s\n", event.Event)
+	if nil == err {
+		return false
+	}
+	if "" != event.Data {
+		_, err = fmt.Fprintf(w, "data: %s\n", event.Data)
+		if nil != err {
+			return false
+		}
+	}
+	_, err = fmt.Fprint(w, "\n")
+	if nil != err {
+		return false
+	}
+	f.Flush()
+	return true
+}
+
 func (server *Server) connectionHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "text/event-stream")
@@ -106,23 +125,9 @@ func (server *Server) connectionHandler(w http.ResponseWriter, r *http.Request) 
 		if f, ok := w.(http.Flusher); ok {
 			server.afterConnect(link)
 			for {
-				select {
-				case event := <-link.Events:
-					_, err = fmt.Fprintf(w, "event: %s\n", event.Event)
-					if nil != err {
-						break
-					}
-					if "" != event.Data {
-						_, err = fmt.Fprintf(w, "data: %s\n", event.Data)
-						if nil != err {
-							break
-						}
-					}
-					_, err = fmt.Fprint(w, "\n")
-					if nil != err {
-						break
-					}
-					f.Flush()
+				event := <-link.Events
+				if success := server.sendEvent(w, f, event); !success {
+					break
 				}
 			}
 		} else {
