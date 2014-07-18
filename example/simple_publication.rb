@@ -27,13 +27,13 @@ end
 # can be defined in the class, callbacks too.
 class PostFeed < Gorsse::Protocol ; end
 
-# Create a Protocol instance scoped with 'loremscope'.
-post_feed = PostFeed.new('scope')
+# Create a Protocol instance scoped with 'myblog'.
+post_feed = PostFeed.new('myblog')
 
 # Create an new event to send.
 article = Article.new('Title', 'Content')
 
-# Signal the loremblog listenners with the 'article',
+# Signal the post_feed listenners with the 'article',
 # all the clients should receive the signal (it's the default).
 post_feed.signal(article)
 

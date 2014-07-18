@@ -14,13 +14,19 @@ Gorsse.configure do |config|
   config.handler  = 'tcp://127.0.0.1:4568'
 end
 
+# The Article is the entity to send via SSE
+# and it only has to implement the #to_sse method.
 class Article < Struct.new(:title, :content)
   def to_sse
     JSON.generate({title: title, content: content})
   end
 end
 
+
+# The CurentClient is another kind of entity.
 class CurrentClient < Struct.new(:uid)
+  # The name used for the event is the classname. With a
+  # .sse_name classmethod, you can override this behaviour.
   def self.sse_name
     'current_client'
   end
