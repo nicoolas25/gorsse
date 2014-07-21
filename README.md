@@ -71,8 +71,7 @@ This is probably the part that you've been waiting...
 First of all, your application must require 'gorsse' and configure it
 properly:
 
-~~~
-:::ruby
+~~~ruby
 require 'gorsse'
 
 Gorsse.configure do |config|
@@ -94,8 +93,7 @@ to publish informations.
 *Protocols* match a specific communication pattern from your server to
 your clients. This is an example of a two empty protocol:
 
-~~~
-:::ruby
+~~~ruby
 class PostFeed < Gorsse::Protocol ; end
 class ChatFeed < Gorsse::Protocol ; end
 ~~~
@@ -105,8 +103,7 @@ instance, if your application is a blog provider SaaS then you'll have
 one `PostFeed` scope per blog. Or, if your application is a chat server
 then you'll have one `ChatFeed` scope per channel.
 
-~~~
-:::ruby
+~~~ruby
 endpoint = ChatFeed.new('room42')
 ~~~
 
@@ -117,8 +114,7 @@ You can see the protocol and scope as an endpoint like `/ChatFeed/room42`.
 From the previous example, you can publish a message to all the connected
 clients with the following code:
 
-~~~
-:::ruby
+~~~ruby
 class Message < Struct.new(:author, :content)
   # This is required to be send as an event by Gorsse.
   # @return String
@@ -145,8 +141,7 @@ You can achieve private messages with scopes.
 
 There is also a notion of Client that allows you to do something like this:
 
-~~~
-:::ruby
+~~~ruby
 client = Gorsse::Client.new('124df54b0')
 message = Message.new('Alice', 'Goodbye...')
 endpoint.signal(message, target: client)
