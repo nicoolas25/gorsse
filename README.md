@@ -23,7 +23,7 @@ to keep the connection alive then your application is down to the rest of
 the world...
 
 This may be not the case on all the Ruby implementation and for all
-webservers, see the alternative server for more details about it.
+webservers, see the alternative section for more details about it.
 
 ## Usage examples
 
@@ -175,7 +175,7 @@ in the `gorsse_server` directory). You can also ask me for a binary version.
 
 ## Alternative
 
-There is many other solutions out there that are aiming the same goal.
+There are many other solutions out there that are aiming the same goal.
 You can try to fix the server with Goliath or you can rely on external
 components with Faye.
 
