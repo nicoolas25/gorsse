@@ -25,6 +25,16 @@ the world...
 This may be not the case on all the Ruby implementation and for all
 webservers, see the alternative server for more details about it.
 
+## Usage examples
+
+This project can be useful when you're using:
+
+* chat systems,
+* asynchronous job notifications,
+* live monitoring,
+* et cetera
+
+
 ## Architecture
 
 The whole idea is to keep your Ruby application as it is, adding one
