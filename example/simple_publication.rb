@@ -11,7 +11,7 @@ require 'gorsse'
 # Configure the library by defining the address to receive
 # the external callback and the address to send the events.
 Gorsse.configure do |config|
-  config.handler  = 'tcp://127.0.0.1:4568'
+  config.event_handler_url = 'tcp://127.0.0.1:4568'
 end
 
 # Define an entity to use as an event.

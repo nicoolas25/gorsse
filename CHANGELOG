@@ -1,0 +1,17 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+## 0.1.0 - 2014-08-18
+
+### Added
+- Basic TCP connections.
+
+### Deprecated
+- The Go event server should always be running before its clients.
+
+### Removed
+- Dependency to the ZeroMQ library.
+
+### Fixed
+- Nothing.

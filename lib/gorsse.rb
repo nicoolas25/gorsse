@@ -20,15 +20,14 @@ module Gorsse
   def self.close_connections
     @conn && @conn.close
     @receiver_conn && @receiver_conn.close
-    Connection::ZCTX.terminate
   end
 
   def self.conn
-    @conn ||= Connection.new(config.handler, mode: :push, method: :connect)
+    @conn ||= Connection.client(config.event_handler_url)
   end
 
   def self.receiver_conn
-    @receiver_conn ||= Connection.new(config.receiver, mode: :pull, method: :bind)
+    @receiver_conn ||= Connection.server(config.callback_receiver_url)
   end
 
   def self.start_receiver_loop!

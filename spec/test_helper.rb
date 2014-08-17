@@ -1,8 +1,8 @@
 require 'gorsse'
 
 Gorsse.configure do |config|
-  config.receiver = 'tcp://127.0.0.1:4567'
-  config.handler  = 'tcp://127.0.0.1:4568'
+  config.callback_receiver_url = 'http://127.0.0.1:4567'
+  config.event_handler_url     = 'http://127.0.0.1:4568'
 end
 
 class FakeConnection ; end

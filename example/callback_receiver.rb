@@ -10,8 +10,8 @@ require 'gorsse'
 # Configure the library by defining the address to receive
 # the external callback and the address to send the events.
 Gorsse.configure do |config|
-  config.receiver = 'tcp://127.0.0.1:4567'
-  config.handler  = 'tcp://127.0.0.1:4568'
+  config.callback_receiver_url = 'tcp://127.0.0.1:4567'
+  config.event_handler_url     = 'tcp://127.0.0.1:4568'
 end
 
 # The Article is the entity to send via SSE
