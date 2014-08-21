@@ -3,8 +3,9 @@ package event
 import (
 	"encoding/json"
 	"fmt"
-
-	zmq "github.com/pebbe/zmq4"
+	"net"
+	"strconv"
+	"strings"
 )
 
 type Scope string
@@ -20,54 +21,101 @@ type Event struct {
 }
 
 type Server struct {
-	Context *zmq.Context
-	Url     string
-	Events  chan Event
-	quit    chan bool
-	socket  *zmq.Socket
+	Url      string
+	Events   chan Event
+	quit     chan bool
+	listener net.Listener
 }
 
-func NewServer(context *zmq.Context, url string) *Server {
+func NewServer(url string) *Server {
 	return &Server{
-		Context: context,
-		Url:     url,
-		Events:  make(chan Event),
-		quit:    make(chan bool),
+		Url:    url,
+		Events: make(chan Event),
+		quit:   make(chan bool),
 	}
 }
 
 func (server *Server) Stop() {
 	server.quit <- true
-	server.socket.Close()
+	server.listener.Close()
 	fmt.Print("Terminating the event server.\n")
 }
 
 func (server *Server) Start() {
-	server.connect()
 	go server.stream()
 	<-server.quit
 }
 
-func (server *Server) connect() error {
-	var err error
-	server.socket, err = server.Context.NewSocket(zmq.PULL)
-	if nil == err {
-		err = server.socket.Bind(server.Url)
-	}
-	return err
-}
-
 func (server *Server) stream() {
-	var data map[string]interface{}
+	listener, err := net.Listen("tcp", server.Url)
+
+	if err != nil {
+		fmt.Printf("Server event: failed to listen to the Url: %s\n", err.Error())
+		return
+	}
+
+	server.listener = listener
 
 	for {
-		message, err := server.socket.RecvBytes(0)
+		conn, err := server.listener.Accept()
 
-		if nil != err {
-			fmt.Printf("RecvBytes failed: %s\n", err.Error())
+		if err != nil {
+			fmt.Printf("Server event: failed to accept a connection: %s\n", err.Error())
+			continue
+		}
+
+		go server.handleConn(conn)
+	}
+}
+
+func (server *Server) handleConn(conn net.Conn) {
+	defer conn.Close()
+
+Loop:
+	for {
+		var header [10]byte
+		headerSize, err := conn.Read(header[0:])
+
+		if headerSize != 10 {
+			fmt.Print("Server event: read size failed: not enough byte read\n")
 			break
 		}
 
+		if err != nil {
+			fmt.Printf("Server event: read size failed: %s\n", err.Error())
+			break
+		}
+
+		size, err := strconv.ParseInt(strings.TrimSpace(string(header[:])), 10, 8)
+
+		if err != nil {
+			fmt.Printf("Server event: malformed header: %s\n", err.Error())
+			break
+		}
+
+		if size <= 0 {
+			fmt.Print("Server event: malformed header: size must be positive\n", err.Error())
+			break
+		}
+
+		message := make([]byte, size, size)
+		cursor := 0
+
+		for {
+			read, err := conn.Read(message[cursor:])
+			cursor = cursor + read
+
+			if err != nil {
+				fmt.Printf("Server event: read event failed: %s\n", err.Error())
+				break Loop
+			}
+
+			if cursor >= int(size) {
+				break
+			}
+		}
+
+		var data map[string]interface{}
 		json.Unmarshal(message, &data)
 		server.Events <- Event{
 			Protocol: Protocol(data["proto"].(string)),

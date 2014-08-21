@@ -3,9 +3,9 @@ package master
 import (
 	"encoding/json"
 	"fmt"
+	"net"
 
 	es "github.com/nicoolas25/gorsse/gorsse_server/event"
-	zmq "github.com/pebbe/zmq4"
 )
 
 type Callback struct {
@@ -16,16 +16,14 @@ type Callback struct {
 }
 
 type Client struct {
-	Context  *zmq.Context
 	Url      string
 	quit     chan bool
 	Commands chan Callback
-	socket   *zmq.Socket
+	conn     net.Conn
 }
 
-func NewClient(context *zmq.Context, url string) *Client {
+func NewClient(url string) *Client {
 	return &Client{
-		Context:  context,
 		Url:      url,
 		Commands: make(chan Callback),
 		quit:     make(chan bool),
@@ -33,23 +31,23 @@ func NewClient(context *zmq.Context, url string) *Client {
 }
 
 func (client *Client) Start() {
-	client.connect()
+	err := client.connect()
+	if err != nil {
+		fmt.Printf("Client connection error: %s\n", err.Error())
+		return
+	}
 	client.stream()
 }
 
 func (client *Client) Stop() {
 	client.quit <- true
-	client.socket.Close()
+	client.conn.Close()
 	fmt.Print("Terminating the client server.\n")
 }
 
-func (client *Client) connect() error {
-	var err error
-	client.socket, err = client.Context.NewSocket(zmq.PUSH)
-	if nil == err {
-		err = client.socket.Connect(client.Url)
-	}
-	return err
+func (client *Client) connect() (err error) {
+	client.conn, err = net.Dial("tcp", client.Url)
+	return
 }
 
 func (client *Client) stream() {
@@ -64,7 +62,15 @@ func (client *Client) stream() {
 		case callback = <-client.Commands:
 			bytes, err = json.Marshal(callback)
 			if nil == err {
-				_, err = client.socket.SendBytes(bytes, 0)
+				header := fmt.Sprintf("%10d", len(bytes))
+				_, err = client.conn.Write([]byte(header))
+
+				if nil != err {
+					fmt.Printf("Message %s can't be send: %s\n", callback, err.Error())
+				}
+
+				_, err = client.conn.Write(bytes)
+
 				if nil != err {
 					fmt.Printf("Message %s can't be send: %s\n", callback, err.Error())
 				}
