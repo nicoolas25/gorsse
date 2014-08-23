@@ -31,17 +31,14 @@ func NewClient(url string) *Client {
 }
 
 func (client *Client) Start() {
-	err := client.connect()
-	if err != nil {
-		fmt.Printf("Client connection error: %s\n", err.Error())
-		return
-	}
 	client.stream()
 }
 
 func (client *Client) Stop() {
 	client.quit <- true
-	client.conn.Close()
+	if client.conn != nil {
+		client.conn.Close()
+	}
 	fmt.Print("Terminating the client server.\n")
 }
 
@@ -62,6 +59,14 @@ func (client *Client) stream() {
 		case callback = <-client.Commands:
 			bytes, err = json.Marshal(callback)
 			if nil == err {
+				if client.conn == nil {
+					err = client.connect()
+					if err != nil {
+						fmt.Printf("Client connection error: %s\n", err.Error())
+						break
+					}
+				}
+
 				header := fmt.Sprintf("%10d", len(bytes))
 				_, err = client.conn.Write([]byte(header))
 

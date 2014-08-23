@@ -36,7 +36,7 @@ class CurrentClient < Struct.new(:uid)
   end
 end
 
-class BlogFeed < Gorsse::Protocol
+class PostFeed < Gorsse::Protocol
   # After some client join a channel matching this protocol
   # this method is triggered. Custom signals can be sent to
   # all users or to the new one.

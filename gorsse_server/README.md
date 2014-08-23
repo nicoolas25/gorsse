@@ -25,8 +25,8 @@ If Go is already setup, try this:
 
 There is only few options:
 
-* `-c="tcp://127.0.0.1:4567" the address to send the callbacks`
-* `-e="tcp://127.0.0.1:4568" the address to receive the events`
+* `-c="127.0.0.1:4567" the address to send the callbacks`
+* `-e="127.0.0.1:4568" the address to receive the events`
 * `-p=8080                   the port to listen client connections`
 * `-s=false                  turn on the callbacks when present`
 

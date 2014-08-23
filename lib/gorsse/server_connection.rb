@@ -48,9 +48,9 @@ module Gorsse
       def loop!
         Thread.start do
           loop do
-            header = @tcpsocket.recv(10, Socket::MSG_PEEK)
+            header = @tcpsocket.recv(10)
             length = header.to_i
-            message = @tcpsocket.recv(length, Socket::MSG_PEEK)
+            message = @tcpsocket.recv(length)
             @connection.queue << message
           end
         end

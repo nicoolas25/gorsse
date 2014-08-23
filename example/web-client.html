@@ -5,9 +5,15 @@
   <body>
     <script type="text/javascript">
       var source = new EventSource('http://127.0.0.1:8080/events?p=PostFeed&s=myblog');
+
       source.addEventListener('Article', function(e) {
         var data = JSON.parse(e.data);
         console.log('Article received:', data);
+      }, false);
+
+      source.addEventListener('current_client', function(e) {
+        var data = JSON.parse(e.data);
+        console.log("I am:", data);
       }, false);
     </script>
   </body>

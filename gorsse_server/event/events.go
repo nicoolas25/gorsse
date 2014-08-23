@@ -86,7 +86,7 @@ Loop:
 			break
 		}
 
-		size, err := strconv.ParseInt(strings.TrimSpace(string(header[:])), 10, 8)
+		size, err := strconv.ParseInt(strings.TrimSpace(string(header[:])), 10, 32)
 
 		if err != nil {
 			fmt.Printf("Server event: malformed header: %s\n", err.Error())
